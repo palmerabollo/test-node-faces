@@ -15,9 +15,12 @@ io.sockets.on('connection', function (socket) {
   io.sockets.emit('news', { id: socket.id });
   
   socket.on('image', function processImage(data) {
-    var binaryData = new Buffer(base64Data, 'base64').toString('binary');
+    console.log(data.image);
+    var binaryData = new Buffer(data.image, 'base64');
 
-    var faceStream = faces.createStream().write(binaryData);
+    var faceStream = faces.createStream();
+
+    faceStream.write(binaryData);
     faceStream.on('data', function(frame) {
         io.sockets.emit('image_cv', {image: faces.toImageUrl(frame)});    
     })

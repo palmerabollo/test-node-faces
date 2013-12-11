@@ -35,7 +35,7 @@
       img.onload = function() {
         ctxTarget.drawImage(img, 0, 0);
       }
-      img.src = "data:image/png;base64," + data.image;
+      img.src = data.image;
     });
 
     navigator.webkitGetUserMedia({video: true}, function (stream) {
