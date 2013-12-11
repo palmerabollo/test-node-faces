@@ -14,7 +14,7 @@
     var canvasTarget = document.getElementById('canvas_target');
     var ctxTarget = canvasTarget.getContext('2d');
     
-    var socket = io.connect('http://localhost:2500');
+    var socket = io.connect('http://5.255.150.116:2500');
 
     function snapshot() {
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);

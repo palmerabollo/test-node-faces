@@ -15,16 +15,22 @@ io.sockets.on('connection', function (socket) {
   io.sockets.emit('news', { id: socket.id });
   
   socket.on('image', function processImage(data) {
-    console.log(data.image);
     var binaryData = new Buffer(data.image, 'base64');
-
-    var faceStream = faces.createStream();
-
-    faceStream.write(binaryData);
-    faceStream.on('data', function(frame) {
-        io.sockets.emit('image_cv', {image: faces.toImageUrl(frame)});    
-    })
+    
+    var cv = require('opencv');
+    cv.readImage(binaryData, function(err, im) {
+        im.detectObject(cv.FACE_CASCADE, {}, function(err, faces){
+            console.log("faces found: %d", faces.length);
+            for (var i=0;i<faces.length; i++){
+               var x = faces[i]
+               im.ellipse(x.x + x.width/2, x.y + x.height/2, x.width/2, x.height/2);
+            }
+            // "data:image/#{fmt};base64,#{buf.toString('base64')}"
+            var imageURL = "data:image/jpg;base64," + im.toBuffer().toString('base64');
+            io.sockets.emit('image_cv', {image: imageURL});    
+        });    
+    });
   });
 });
 
-io.set('log level', 1);
+io.set('log level', 0);
