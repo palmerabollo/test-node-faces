@@ -1,0 +1,47 @@
+<html>
+<body>
+  <video id="video" width="320" height="240" autoplay></video>
+  <canvas id="canvas" width="320" height="240"></canvas>
+  <canvas id="canvas_target" width="320" height="240"></canvas>
+
+  <script src="/socket.io/socket.io.js"></script>
+
+  <script>
+    var video = document.getElementById('video');
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+
+    var canvasTarget = document.getElementById('canvas_target');
+    var ctxTarget = canvasTarget.getContext('2d');
+    
+    var socket = io.connect('http://localhost:2500');
+
+    function snapshot() {
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      // var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      // data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAA...
+      var imageURL = canvas.toDataURL();
+      var imageBase64 = imageURL.substr(imageURL.indexOf(",") + 1);
+      socket.emit('image', { image: imageBase64 });
+    }
+
+    socket.on('news', function (data) {
+      console.log("new connection " + data.id);
+    });
+
+    socket.on('image_cv', function (data) {
+      var img = new Image();
+      img.onload = function() {
+        ctxTarget.drawImage(img, 0, 0);
+      }
+      img.src = "data:image/png;base64," + data.image;
+    });
+
+    navigator.webkitGetUserMedia({video: true}, function (stream) {
+      video.src = window.URL.createObjectURL(stream);
+      setInterval(snapshot, 1000);
+    });
+  </script>
+</body>
+</html>
