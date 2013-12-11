@@ -24,26 +24,25 @@ io.sockets.on('connection', function (socket) {
 });
 
 var detectFaces = function (imageData, callback) {
-    var binaryData = new Buffer(imageData, 'base64');
-    
-    cv.readImage(binaryData, function(err, im) {
+  var binaryData = new Buffer(imageData, 'base64');
+  
+  cv.readImage(binaryData, function(err, im) {
+    if (err) {
+      return callback(err);
+    }
+
+    im.detectObject(cv.FACE_CASCADE, {}, function(err, faces) {
       if (err) {
         return callback(err);
       }
 
-      im.detectObject(cv.FACE_CASCADE, {}, function(err, faces) {
-        if (err) {
-          return callback(err);
-        }
+      for (var i=0; i<faces.length; i++){
+         var x = faces[i]
+         im.ellipse(x.x + x.width/2, x.y + x.height/2, x.width/2, x.height/2);
+      }
 
-        for (var i=0; i<faces.length; i++){
-           var x = faces[i]
-           im.ellipse(x.x + x.width/2, x.y + x.height/2, x.width/2, x.height/2);
-        }
-
-        var newImageData = im.toBuffer().toString('base64');
-        callback(null, newImageData);
-      });
+      var newImageData = im.toBuffer().toString('base64');
+      callback(null, newImageData);
     });
-  }
+  });
 }
