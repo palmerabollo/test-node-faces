@@ -22,19 +22,18 @@
     }
 
     socket.on('faces', function (data) {
-      for (var i=0; i<data.faces.length; i++){
+      for (var i=0; i<data.faces.length; i++) {
          var x = data.faces[i];
-         ctx.beginPath();
-         ctx.arc(x.x + x.width/2, x.y + x.height/2, x.width/2, x.height/2, Math.PI * 2, true);
-         ctx.closePath();
+         ctx.rect(x.x, x.y, x.width, x.height);
+         ctx.stroke();
       }
 
-      snapshot();
+      // snapshot();
     });
 
     navigator.webkitGetUserMedia({video: true}, function (stream) {
       video.src = window.URL.createObjectURL(stream);
-      snapshot();
+      setTimeout(snapshot, 100);
     });
   </script>
 </body>
