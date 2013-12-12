@@ -8,7 +8,7 @@ app.configure(function () {
     app.use("/", express.static(__dirname + '/'));
 });
 
-var server = http.createServer(app).listen(2500);
+var server = http.createServer(app).listen(80);
 var io = require('socket.io').listen(server);
 
 io.set('log level', 1);

