@@ -1,8 +1,7 @@
 <html>
 <body>
   <video id="video" width="180" height="120" autoplay></video>
-  <canvas id="canvas" width="180" height="120"></canvas>
-  <canvas id="canvas_target" width="180" height="120"></canvas>
+  <canvas id="canvas" width="180" height="120"></canvas><br>
 
   <script src="/socket.io/socket.io.js"></script>
 
@@ -11,9 +10,6 @@
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
 
-    var canvasTarget = document.getElementById('canvas_target');
-    var ctxTarget = canvasTarget.getContext('2d');
-    
     var socket = io.connect('http://5.255.150.116:2500');
 
     function snapshot() {
@@ -26,17 +22,20 @@
     }
 
     socket.on('image_cv', function (data) {
-      var img = new Image();
-      img.onload = function() {
-        ctxTarget.drawImage(img, 0, 0);
+      var image = document.getElementById(data.id);
+
+      if (!image) {
+        image = document.createElement("img");
+        image.id = data.id;
+        document.body.appendChild(image);
       }
-      img.id = data.id;
-      img.src = "data:image/jpg;base64," + data.image;
+
+      image.src = "data:image/jpg;base64," + data.image;
     });
 
     navigator.webkitGetUserMedia({video: true}, function (stream) {
       video.src = window.URL.createObjectURL(stream);
-      setInterval(snapshot, 2000);
+      setInterval(snapshot, 5000);
     });
   </script>
 </body>
