@@ -15,9 +15,9 @@ io.set('log level', 1);
 
 io.sockets.on('connection', function (socket) {
   socket.on('image', function processImage(data) {
-    detectFaces(data.image, function (err, imageData) {
+    detectFaces(data.image, function (err, faces) {
       if (!err) {
-        io.sockets.emit('image_cv', {id: socket.id, image: imageData});
+        io.sockets.emit('faces', {id: socket.id, faces: faces});
       }
     });
   });
@@ -36,13 +36,7 @@ var detectFaces = function (imageData, callback) {
         return callback(err);
       }
 
-      for (var i=0; i<faces.length; i++){
-         var x = faces[i]
-         im.ellipse(x.x + x.width/2, x.y + x.height/2, x.width/2, x.height/2);
-      }
-
-      var newImageData = im.toBuffer().toString('base64');
-      callback(null, newImageData);
+      callback(null, faces);
     });
   });
 }
