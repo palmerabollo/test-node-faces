@@ -11,7 +11,8 @@ It works on Google Chrome but it should be easy to edit the HTML code in order t
 Installation
 ------------
 
-# clone the project
-# edit the hardcoded URL in index.html
-# npm install
-# npm start
+- install nodejs
+- clone the project
+- edit the hardcoded URL in index.html
+- npm install
+- npm start
